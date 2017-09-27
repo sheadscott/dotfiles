@@ -1,0 +1,138 @@
+" set nocompatible              " required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
+
+Plugin 'tmhedberg/SimpylFold'
+" Plugin 'Valloric/YouCompleteMe'
+" Plugin 'nvie/vim-flake8'
+Plugin 'jnurmine/Zenburn'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'kien/ctrlp.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plugin 'Glench/Vim-Jinja2-Syntax'
+" Plugin 'tell-k/vim-autopep8'
+" Plugin 'python-mode/python-mode'
+Plugin 'wesQ3/vim-windowswap'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'sheerun/vim-polyglot'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" Change <leader> to ','
+let mapleader=","
+
+set encoding=utf-8
+let python_highlight_all=1
+set nu
+set clipboard=unnamed
+set backspace=2	" make backspace work like most other apps
+syntax on
+
+" Plugin Modifiers
+" 	YouComplete 
+" let g:ycm_autoclose_preview_window_after_completion=1
+" map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"	NerdTree
+let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NerdTree
+" autocmd vimenter * NERDTree
+:command Nt NERDTreeToggle
+
+" NerdCommenter
+let g:NERDSpaceDelims = 1
+
+" python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+	project_base_dir = os.environ['VIRTUAL_ENV']
+	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+	execfile(activate_this, dict(__file__=activate_this))
+EOF
+
+" Enable code folding
+set foldmethod=indent
+set foldlevel=99
+
+au FileType html,css,j2,yml,yaml
+	\ setlocal tabstop=2 shiftwidth=2 softtabstop=2
+
+au FileType sh,javascript
+	\ setlocal tabstop=4 shiftwidth=4 softtabstop=4
+
+" PEP8 Indentation
+
+au FileType py
+	\ setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=79 autoindent fileformat=unix
+
+" Set j2 syntax to html
+au FileType j2 setlocal syntax=html
+
+
+" Show Unnecessary Whitespace
+" au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" Indent Python in the Google way.
+
+setlocal indentexpr=GetGooglePythonIndent(v:lnum)
+
+let s:maxoff = 50 " maximum number of lines to look backwards.
+
+function GetGooglePythonIndent(lnum)
+
+  " Indent inside parens.
+  " Align with the open paren unless it is at the end of the line.
+  " E.g.
+  "   open_paren_not_at_EOL(100,
+  "                         (200,
+  "                          300),
+  "                         400)
+  "   open_paren_at_EOL(
+  "       100, 200, 300, 400)
+  call cursor(a:lnum, 1)
+  let [par_line, par_col] = searchpairpos('(\|{\|\[', '', ')\|}\|\]', 'bW',
+        \ "line('.') < " . (a:lnum - s:maxoff) . " ? dummy :"
+        \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
+        \ . " =~ '\\(Comment\\|String\\)$'")
+  if par_line > 0
+    call cursor(par_line, 1)
+    if par_col != col("$") - 1
+      return par_col
+    endif
+  endif
+
+  " Delegate the rest to the original function.
+  return GetPythonIndent(a:lnum)
+
+endfunction
+
+let pyindent_nested_paren="&sw*2"
+let pyindent_open_paren="&sw*2"
+
+" Shortcut to rapidly toggle `set list`
+nmap <leader>l :set list!<CR>
+
+" Use the same symbols as TextMate for tabstops and EOLs
+" set listchars=eol:¬
+set listchars=tab:▸\ ,eol:¬
+" Use Enter to insert blank line in command mode without entering into Insert mode
+nmap <S-Enter> O<Esc>
+nmap <CR> o<Esc>
