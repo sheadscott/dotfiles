@@ -12,7 +12,7 @@ antigen use oh-my-zsh
 antigen bundle git
 antigen bundle pip
 antigen bundle command-not-found
-antigen bundle docker
+# antigen bundle docker
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -27,6 +27,7 @@ antigen apply
 
 # ZSH_THEME="bira"
 ZSH_THEME="af-magic"
+# ZSH_THEME="agnoster"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -70,13 +71,16 @@ ZSH_THEME="af-magic"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(colored-man colorize github jira vagrant virtualenv pip python brew osx)
+plugins=(colored-man colorize github pip python virtualenv)
 
 # User configuration
 
 # export PATH="$(brew --prefix homebrew/php/php70)/bin:${PATH}"
 # export MANPATH="/usr/local/man:$MANPATH"
 
+# Enable awscli autocompletion
+# source $(sudo ls /usr/local/Cellar/awscli/1.15.20/share/zsh/site-functions/aws_zsh_completer.sh)
+source /usr/local/Cellar/awscli/1.15.20/share/zsh/site-functions/aws_zsh_completer.sh
 
 # Path to your oh-my-zsh installation.
 export ZSH=/Users/Shea/.oh-my-zsh
@@ -119,3 +123,9 @@ export PATH="/usr/local/opt/qt/bin:$PATH"
 alias lyn="learnyounode"
 run() { export CWD=$(pwd) && npm run $1 }
 alias start="run start"
+alias build="run build"
+export PATH="$HOME/.npm-packages/bin:$PATH"
+
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+alias vim="nvim"
+eval "$(pyenv init -)"
